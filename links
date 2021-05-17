@@ -1,0 +1,8 @@
+- https://blogs.nvidia.com/blog/2019/07/25/what-is-simultaneous-localization-and-mapping-nvidia-jetson-isaac-sdk/           **SLAM**
+- https://youtu.be/_FNfRtXEbr4               **Yolo - image recognition**
+- https://www.pyimagesearch.com/2018/06/25/raspberry-pi-face-recognition/       **Face recognition in Raspberry Pi**
+- https://cs231n.github.io/python-numpy-tutorial/      **awesome tutorial on python for computer vision**
+- https://medium.com/@maxdeutsch/how-to-build-a-self-driving-car-in-one-month-d52df48f5b07#:~:text=To%20fully%20build%20a%20self,instruction%20within%20the%20actual%20car.     **a good approach to self driving**
+- https://github.com/ArghyaChatterjee/gps-waypoint-based-autonomous-navigation-in-ros **used ros + GPS to create waypoints and reach destination**
+- https://fh-aachen.sciebo.de/apps/files/?dir=/Pathfinders&fileid=313620686       **sciebo link**
+- https://www.pyimagesearch.com/2015/12/28/increasing-raspberry-pi-fps-with-python-and-opencv/#:~:text=It's%20also%20worth%20noting%20that,get%20up%20to%2090%20FPS.       **increasing fps on Raspi image recognition**
