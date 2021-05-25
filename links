@@ -1,12 +1,12 @@
-- https://blogs.nvidia.com/blog/2019/07/25/what-is-simultaneous-localization-and-mapping-nvidia-jetson-isaac-sdk/           **SLAM**
-- https://youtu.be/_FNfRtXEbr4               **Yolo - image recognition**
-- https://www.pyimagesearch.com/2018/06/25/raspberry-pi-face-recognition/       **Face recognition in Raspberry Pi**
-- https://cs231n.github.io/python-numpy-tutorial/      **awesome tutorial on python for computer vision**
-- https://medium.com/@maxdeutsch/how-to-build-a-self-driving-car-in-one-month-d52df48f5b07#:~:text=To%20fully%20build%20a%20self,instruction%20within%20the%20actual%20car.     **a good approach to self driving**
-- https://github.com/ArghyaChatterjee/gps-waypoint-based-autonomous-navigation-in-ros **used ros + GPS to create waypoints and reach destination**
-- https://fh-aachen.sciebo.de/apps/files/?dir=/Pathfinders&fileid=313620686       **sciebo link**
-- https://www.pyimagesearch.com/2015/12/28/increasing-raspberry-pi-fps-with-python-and-opencv/#:~:text=It's%20also%20worth%20noting%20that,get%20up%20to%2090%20FPS.       **increasing fps on Raspi image recognition**
-- https://www.amazon.de/Garsent-Portable-Speaker-Travel-Stereo-Default/dp/B07H897Q3R/ref=dp_prsubs_1?pd_rd_i=B07H897Q3R&psc=1 **prospective mic**
-- https://discord.com/channels/840947500676415518/843961536455901194/846767694874279987 **voice recognition with the kit**
-- https://www.amazon.de/Sabrent-Soundkarte-External-erforderlich-AU-MMSA/dp/B00IRVQ0F8/ref=sr_1_3?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=usb+soundcard&qid=1621972979&sr=8-3 **sound card**
-- https://discord.com/channels/840947500676415518/843961536455901194/846782379355537421  **SmartLab_Purdue-ros-tutorial-voice**
+**SLAM** - https://blogs.nvidia.com/blog/2019/07/25/what-is-simultaneous-localization-and-mapping-nvidia-jetson-isaac-sdk/           
+**Yolo - image recognition** - https://youtu.be/_FNfRtXEbr4               
+**Face recognition in Raspberry Pi** - https://www.pyimagesearch.com/2018/06/25/raspberry-pi-face-recognition/       
+**awesome tutorial on python for computer vision** - https://cs231n.github.io/python-numpy-tutorial/      
+**a good approach to self driving** - https://medium.com/@maxdeutsch/how-to-build-a-self-driving-car-in-one-month-d52df48f5b07#:~:text=To%20fully%20build%20a%20self,instruction%20within%20the%20actual%20car.    
+**used ros + GPS to create waypoints and reach destination** - https://github.com/ArghyaChatterjee/gps-waypoint-based-autonomous-navigation-in-ros 
+**sciebo link** - https://fh-aachen.sciebo.de/apps/files/?dir=/Pathfinders&fileid=313620686       
+**increasing fps on Raspi image recognition** - https://www.pyimagesearch.com/2015/12/28/increasing-raspberry-pi-fps-with-python-and-opencv/#:~:text=It's%20also%20worth%20noting%20that,get%20up%20to%2090%20FPS.       
+**prospective mic** - https://www.amazon.de/Garsent-Portable-Speaker-Travel-Stereo-Default/dp/B07H897Q3R/ref=dp_prsubs_1?pd_rd_i=B07H897Q3R&psc=1 
+**voice recognition with the kit** - https://discord.com/channels/840947500676415518/843961536455901194/846767694874279987 
+**sound card** - https://www.amazon.de/Sabrent-Soundkarte-External-erforderlich-AU-MMSA/dp/B00IRVQ0F8/ref=sr_1_3?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=usb+soundcard&qid=1621972979&sr=8-3 
+**SmartLab_Purdue-ros-tutorial-voice** - https://discord.com/channels/840947500676415518/843961536455901194/846782379355537421  
