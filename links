@@ -11,3 +11,12 @@
 **sound card**                                                          - https://www.amazon.de/Sabrent-Soundkarte-External-erforderlich-AU-MMSA/dp/B00IRVQ0F8/ref=sr_1_3?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=usb+soundcard&qid=1621972979&sr=8-3 
 **SmartLab_Purdue-ros-tutorial-voice**                                  - https://discord.com/channels/840947500676415518/843961536455901194/846782379355537421  
 **Respeaker 4-mic array**                                               - https://respeaker.io/4_mic_array/
+
+**LIVE FEED**
+**How to stream video to any laptop**                                   - https://www.youtube.com/watch?v=bWwZF_zVf00
+**remote viewing Camera**                                               - https://www.youtube.com/watch?v=bWwZF_zVf00
+**low latency FPs for streaming**                                       - https://nerdhut.de/2018/12/17/low-latency-and-high-fps-camera-stream-with-raspberry-pi/
+**increasing FPS**                                                      - https://www.pyimagesearch.com/2015/12/28/increasing-raspberry-pi-fps-with-python-and-opencv/
+**stream as images**                                                    - https://roboticsknowledgebase.com/wiki/tools/stream-rviz/
+**using ROS**                                                           - https://www.reddit.com/r/ROS/comments/c8nt7f/live_video_streaming_in_ros/
+**using opencv**                                                        - http://wiki.ros.org/video_stream_opencv
