@@ -1,4 +1,5 @@
-#! Python 3.9.6
+#! Python 3.9.6 
+#@Nishanth last edited 2:19 6th Aug 2021 
 """
 logic-
 code scans speech, converts it to a string, and checks if the string contains one of the words we require
@@ -18,7 +19,7 @@ import rospy
 from std_mdsgs.msg import Int16
 """
 model_path = get_model_path()
-global wordList
+
 wordsList=['yes','no','yeah','nope']        #vocabulary to be increased
 
 wordListdict = {
