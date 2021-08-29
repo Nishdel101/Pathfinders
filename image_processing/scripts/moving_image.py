@@ -68,5 +68,5 @@ if body_detect_flag==1 and face_detect_flag==1:
     Movement()
     body_detect_flag=0
     face_detect_flag=0
-rospy.spin()
+rospy.sleep(10.)
 
