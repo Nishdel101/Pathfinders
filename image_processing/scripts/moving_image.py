@@ -36,8 +36,8 @@ def Body_detect(msg):
             breadth=detection.ymax- detection.ymin
             area_Body.append(Area(length,breadth))
     i_body = area_Body.index(max(area_Body))
-    x_max_body=msg.bounding_boxes[i].xmax
-    x_min_body=msg.bounding_boxes[i].xmin
+    x_max_body=msg.bounding_boxes[i_body].xmax
+    x_min_body=msg.bounding_boxes[i_body].xmin
     centre_body=(x_max_body + x_min_body)/2  
     
 def Face_detect(msg):
