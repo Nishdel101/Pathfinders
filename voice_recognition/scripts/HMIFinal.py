@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+#!/usr/bin/envs python3
+
 """
 logic-
 code scans speech, converts it to a string, and checks if the string contains one of the words we require
@@ -12,7 +13,7 @@ say something else and then again change the him variable. epending on the kez i
 
 import os
 from pocketsphinx import LiveSpeech, get_model_path
-from playsound import playsound
+
 import rospy
 from std_msgs.msg import Int16
 import time
@@ -34,35 +35,14 @@ wordListdict = {
     'nope':4
 }
 
-def commandRecognition(hmiPhase):
-    if hmiPhase==1:
-        print("im here to help. Did you ask for this medkit")
-        playsound('/home/mascor/Downloads/496088_dastudiospr_finger-snap.mp3')
-    elif hmiPhase==2:
-        print("see you later , bye")
-        playsound('/home/mascor/Downloads/496088_dastudiospr_finger-snap.mp3')
-    elif hmiPhase==3:
-        print("please take the med kit .")
-        playsound('/home/mascor/Downloads/496088_dastudiospr_finger-snap.mp3')
-
-    elif hmiPhase==4:
-        print("do you need more assistance ? i can take you to the hospital")
-        playsound('/home/mascor/Downloads/496088_dastudiospr_finger-snap.mp3')
-
-    elif hmiPhase==5:
-        print("follow me")
-        playsound('/home/mascor/Downloads/496088_dastudiospr_finger-snap.mp3')
-
-    elif hmiPhase==6:
-        print("Bye, im going home now")
-        playsound('/home/mascor/Downloads/496088_dastudiospr_finger-snap.mp3')
-
 
 def voicePublisher():
-    pub = rospy.Publisher('Speech', Int16, queue_size=10) #defined as Int as it is less data to send than string
+    pub = rospy.Publisher('/speech', Int16, queue_size=10) #defined as Int as it is less data to send than string
+    pub_play = rospy.Publisher('/sound_play',Int16, queue_size=10)
     rospy.init_node('VoiceRecognition', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     msg=Int16()
+    hmiPhase=Int16()
     while not rospy.is_shutdown():
 
         speech = LiveSpeech(
@@ -75,11 +55,12 @@ def voicePublisher():
             lm=os.path.join(model_path, 'en-us.lm.bin'),
             dic=os.path.join(model_path, 'cmudict-en-us.dict')
         )
-        hmiPhase=1
+
         command =0
         assistanceFlag=0
         personReachedFlag=0
-        commandRecognition(1)
+        hmiPhase.data=1
+        pub_play.publish(hmiPhase)
         for speechPhrase in speech:
             #print(speechPhrase,'1')    #Debugging statment
             phrase=str(speechPhrase)
@@ -90,28 +71,33 @@ def voicePublisher():
                 if option==1 or option==3:
                     print("said yes")
                     if assistanceFlag==0:
-                        commandRecognition(3)
+                        hmiPhase.data=3
+                        pub_play.publish(hmiPhase)
                         personReachedFlag=1
                         command=1
                         time.sleep(10)
-                        commandRecognition(4)
+                        hmiPhase.data=4
+                        pub_play.publish(hmiPhase)
                         assistanceFlag=1
                     else :
 
-                        commandRecognition(5)
+                        hmiPhase.data=5
+                        pub_play.publish(hmiPhase)
                         command=3
 
                 elif option==2 or option==4:
                     print("said no")
                     if personReachedFlag==0:
-                        commandRecognition(2)
+                        hmiPhase.data=2
+                        pub_play.publish(hmiPhase)
                     else :
-                        commandRecognition(6)
+                        hmiPhase.data=6
+                        pub_play.publish(hmiPhase)
                         command=2
 
 
 
-        msg.data=command         #Debugging statement
+        msg.data=command       #Debugging statement
         rospy.loginfo(msg.data)
         pub.publish(msg)
         rate.sleep()
