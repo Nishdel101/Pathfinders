@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rospy
 from darknet_ros_msgs.msg import BoundingBoxes
-from opencv_appsmsg import FaceArrayStamped
+from opencv_apps.msg import FaceArrayStamped
 
 rospy.init_node('moving_image')
 
