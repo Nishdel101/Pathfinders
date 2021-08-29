@@ -47,7 +47,7 @@ def Face_detect(msg):
     global face_detect_flag
     face_detect_flag=1
     for detection in msg.faces:
-        area_Faces.append(Area(detection.width,detection.height))
+        area_Faces.append(Area(detection.face.width,detection.face.height))
     i_face= area_Faces.index(max(area_Faces))              #assuming that person with biggest body would also show the biggest face
     centre_face= msg.faces[i_face].face.x
     print("Face_detect_SUCCESSFUL")
