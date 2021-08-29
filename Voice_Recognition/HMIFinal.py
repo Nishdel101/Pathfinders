@@ -1,3 +1,5 @@
+#!/usr/bin/envs python3
+
 """
 logic-
 code scans speech, converts it to a string, and checks if the string contains one of the words we require
