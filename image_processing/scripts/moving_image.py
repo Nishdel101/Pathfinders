@@ -58,8 +58,8 @@ def Face_detect(msg):
 def Movement(): 
     print("Movement")
     if centre_face >= centre_body-80 and centre_face<=centre_body+80 :
-        movement = center_body-(image_width/2)
-        if movement > 80 or movement < -80 :
+        movement = centre_body-(image_width/2)
+        if movement < 80 and movement > -80 :
             print(f'move {movement} pixels')
     print("Movement SUCCESSFUL")
     
