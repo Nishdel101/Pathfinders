@@ -57,7 +57,18 @@ def Face_detect(msg):
     
 def Movement(): 
     print("Movement")
-    if centre_face >= centre_body-80 and centre_face<=centre_body+80 :
+    if centre_face==0                                           #if no face is found it just goes with the body anyways// type of movement is different
+        movement = centre_body-(image_width/2)
+        if movement < 80 and movement > -80 :
+            print(f'move {movement} pixels')
+    
+    elif centre_face >= centre_body-80 and centre_face<=centre_body+80 :           #if face is present and is attached to same body//type of movement is differnet. approach face
+        movement = centre_body-(image_width/2)
+        if movement < 80 and movement > -80 :
+            print(f'move {movement} pixels')
+            
+            
+    elif centre_face < centre_body-80 and centre_face > centre_body+80 :            #if face is present but is not attached to the same body and is ignored// type of movement is different
         movement = centre_body-(image_width/2)
         if movement < 80 and movement > -80 :
             print(f'move {movement} pixels')
