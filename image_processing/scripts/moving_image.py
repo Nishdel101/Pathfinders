@@ -19,8 +19,8 @@ global area_Faces
 global area_Body
 area_Faces=[]
 area_Body=[]
-centre_body = []
-centre_face = []
+centre_body = 0
+centre_face = 0
 
 
 def Area(length,breadth):
@@ -41,6 +41,8 @@ def Body_detect(msg):
     x_min_body=msg.bounding_boxes[i_body].xmin
     centre_body=(x_max_body + x_min_body)/2  
     print("Body_detect SUCCESSFUL")
+    rospy.Subscriber('/face_detection/faces', FaceArrayStamped, Face_detect)
+
     
 def Face_detect(msg):
     print("Face_Detect")
@@ -51,6 +53,7 @@ def Face_detect(msg):
     i_face= area_Faces.index(max(area_Faces))              #assuming that person with biggest body would also show the biggest face
     centre_face= msg.faces[i_face].face.x
     print("Face_detect_SUCCESSFUL")
+    Movement()
     
 def Movement(): 
     print("Movement")
@@ -60,6 +63,8 @@ def Movement():
             print(f'move {movement} pixels')
     print("Movement SUCCESSFUL")
     
+body_detect_flag=0
+face_detect_flag=0
 rospy.Subscriber('/darknet_ros/bounding_boxes', BoundingBoxes, Body_detect)
 rospy.Subscriber('/face_detection/faces', FaceArrayStamped, Face_detect)
 print("FINISHED CALLBACKS")
@@ -69,4 +74,3 @@ if body_detect_flag==1 and face_detect_flag==1:
     body_detect_flag=0
     face_detect_flag=0
 rospy.sleep(10.)
-
