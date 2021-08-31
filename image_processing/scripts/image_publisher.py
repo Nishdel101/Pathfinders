@@ -8,16 +8,16 @@ import time
 
 #set image size
 Image_WIDTH=1280
-Image_HEIGHT=720
+Image_HEIGHT=960
 
 #rospy commands
 rospy.init_node('image_raw_pub',anonymous=True)
 pub=rospy.Publisher('/camera/image_raw',Image,queue_size=1)
-rate=rospy.Rate(5)
+rate=rospy.Rate(0.25)
 
 #opencv commands
 cam = cv2.VideoCapture(0)
-cv2.namedWindow("test")
+#cv2.namedWindow("test")
 
 img_counter = 0
 
@@ -26,14 +26,14 @@ while not rospy.is_shutdown():
     if not ret:
         print("failed to grab frame")
         break
-    cv2.imshow("test", frame)
+   #cv2.imshow("test", frame)
 
     k = cv2.waitKey(1)
-    if k%256 == 27:
-        # ESC pressed
-        print("Escape hit, closing...")
-        break
-    elif k%256 == 32:
+#    if k%256 == 27:
+#        # ESC pressed
+#        print("Escape hit, closing...")
+#        break
+    if True:
         # SPACE pressed
         image_temp=Image()
         image_temp.header = Header(stamp=rospy.Time.now())
