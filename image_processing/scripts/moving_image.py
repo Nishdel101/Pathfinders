@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import rospy
+from std_msgs.msg import String
 from darknet_ros_msgs.msg import BoundingBoxes
 from opencv_apps.msg import FaceArrayStamped
 
@@ -41,10 +42,15 @@ def Body_detect(msg):
     x_min_body=msg.bounding_boxes[i_body].xmin
     centre_body=(x_max_body + x_min_body)/2  
     print("Body_detect SUCCESSFUL")
-    rospy.Subscriber('/face_detection/faces', FaceArrayStamped, Face_detect)
+    rospy.Subscriber("instruction", String, Face_detect)
 
     
-def Face_detect(msg):
+def Face_detect(string_msg):
+    print(string_msg)
+    list_msg = list(string_msg.split("\n"))
+    print("listRESSSS",list_msg)
+    msg=list_msg[0]
+    print("ACTUAL FUCKING MESSAGE",msg)
     print("Face_Detect")
     global face_detect_flag
     face_detect_flag=1
@@ -57,7 +63,7 @@ def Face_detect(msg):
     
 def Movement(): 
     print("Movement")
-    if centre_face==0                                           #if no face is found it just goes with the body anyways// type of movement is different
+    if centre_face==0 :                                          #if no face is found it just goes with the body anyways// type of movement is different
         movement = centre_body-(image_width/2)
         if movement < 80 and movement > -80 :
             print(f'move {movement} pixels')
@@ -77,11 +83,11 @@ def Movement():
 body_detect_flag=0
 face_detect_flag=0
 rospy.Subscriber('/darknet_ros/bounding_boxes', BoundingBoxes, Body_detect)
-rospy.Subscriber('/face_detection/faces', FaceArrayStamped, Face_detect)
+#rospy.Subscriber('instruction', String, Face_detect)
 print("FINISHED CALLBACKS")
 if body_detect_flag==1 and face_detect_flag==1:
     print("ENTERING MOVEMENT")
     Movement()
     body_detect_flag=0
     face_detect_flag=0
-rospy.sleep(10.)
+rospy.spin()
