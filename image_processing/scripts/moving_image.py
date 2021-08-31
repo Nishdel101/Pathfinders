@@ -31,29 +31,36 @@ def Area(length,breadth):
 def Body_detect(msg):
     global body_detect_flag
     body_detect_flag=1
-    print("Body_detect")
-    for detection in msg.bounding_boxes:
-        if detection.probability > 0.5:
-            length=detection.xmax - detection.xmin
-            breadth=detection.ymax- detection.ymin
-            area_Body.append(Area(length,breadth))
-    i_body = area_Body.index(max(area_Body))
-    x_max_body=msg.bounding_boxes[i_body].xmax
-    x_min_body=msg.bounding_boxes[i_body].xmin
-    centre_body=(x_max_body + x_min_body)/2  
-    print("Body_detect SUCCESSFUL")
-    rospy.Subscriber("instruction", FaceArrayStamped, Face_detect)
-
+    area_Body.clear()
+    print("Body_Detect")
+    try:    
+        for detection in msg.bounding_boxes:
+            if detection.probability > 0.5:
+                length=detection.xmax - detection.xmin
+                breadth=detection.ymax- detection.ymin
+                area_Body.append(Area(length,breadth))
+        i_body = area_Body.index(max(area_Body))
+        x_max_body=msg.bounding_boxes[i_body].xmax
+        x_min_body=msg.bounding_boxes[i_body].xmin
+        centre_body=(x_max_body + x_min_body)/2  
+        print("Body_detect : SUCCESSFUL")
+        rospy.Subscriber("instruction", FaceArrayStamped, Face_detect)
+    except:
+        print("Body_detect : NOBODY DETECTED")
     
 def Face_detect(msg):
     print("Face_Detect")
     global face_detect_flag
     face_detect_flag=1
-    for detection in msg.faces:
-        area_Faces.append(Area(detection.face.width,detection.face.height))
-    i_face= area_Faces.index(max(area_Faces))              #assuming that person with biggest body would also show the biggest face
-    centre_face= msg.faces[i_face].face.x
-    print("Face_detect_SUCCESSFUL")
+    area_Faces.clear()
+    try:
+        for detection in msg.faces:
+            area_Faces.append(Area(detection.face.width,detection.face.height))
+        i_face= area_Faces.index(max(area_Faces))              #assuming that person with biggest body would also show the biggest face
+        centre_face= msg.faces[i_face].face.x
+        print("Face_detect : SUCCESSFUL")
+    except:
+    	print("Face_detect : NO FACE DETECTED")
     Movement()
     
 def Movement(): 
@@ -73,7 +80,7 @@ def Movement():
         movement = centre_body-(image_width/2)
         if movement < 80 and movement > -80 :
             print(f'move {movement} pixels')
-    print("Movement SUCCESSFUL")
+    print("Movement : SUCCESSFUL")
     
 body_detect_flag=0
 face_detect_flag=0
