@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import rospy
-from std_msgs.msg import String
+#from std_msgs.msg import String
 from darknet_ros_msgs.msg import BoundingBoxes
 from opencv_apps.msg import FaceArrayStamped
 
@@ -42,15 +42,10 @@ def Body_detect(msg):
     x_min_body=msg.bounding_boxes[i_body].xmin
     centre_body=(x_max_body + x_min_body)/2  
     print("Body_detect SUCCESSFUL")
-    rospy.Subscriber("instruction", String, Face_detect)
+    rospy.Subscriber("instruction", FaceArrayStamped, Face_detect)
 
     
-def Face_detect(string_msg):
-    print(string_msg)
-    list_msg = list(string_msg.split("\n"))
-    print("listRESSSS",list_msg)
-    msg=list_msg[0]
-    print("ACTUAL FUCKING MESSAGE",msg)
+def Face_detect(msg):
     print("Face_Detect")
     global face_detect_flag
     face_detect_flag=1
