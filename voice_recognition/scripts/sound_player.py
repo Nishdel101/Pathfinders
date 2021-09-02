@@ -15,17 +15,18 @@ def callback(msg):
         print('see you later , bye')
         playsound('~/ROS/Pathfinders/Voice_Recognition/2.mp3')
     if msg.data == 3:
-          
+        print("please take the med kit .")    
         playsound('~/ROS/Pathfinders/Voice_Recognition/3.mp3')
     if msg.data == 4:
-
+        print("do you need more assistance ? i can take you to the hospital")
         playsound('~/ROS/Pathfinders/Voice_Recognition/4.mp3')
     if msg.data == 5:
-
+        print("follow me")
         playsound('~/ROS/Pathfinders/Voice_Recognition/5.mp3')
     if msg.data == 6:
-
+        print("Bye, im going home now")
         playsound('~/ROS/Pathfinders/Voice_Recognition/6.mp3')
+        
 
 rospy.init_node('sound_player')
 rospy.Subscriber('/sound_play', Int16, callback)
