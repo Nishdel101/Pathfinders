@@ -1,0 +1,4 @@
+tracking_single_rgbd_sensor - put in spencer_people_tracking_launch - launch folder
+tracking_on_robot.launch - put in same as above
+upper_body_...launch - put in rwth_upper_body - launch
+upper body_.yaml - put in rwth_upper_boyd - config
