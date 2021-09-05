@@ -36,6 +36,70 @@ wordListdict = {
 }
 
 
+def callback(instruction):
+
+    speech = LiveSpeech(
+        verbose=False,
+        sampling_rate=8000,
+        buffer_size=256,
+        no_search=False,
+        full_utt=False,
+        hmm=os.path.join(model_path, 'en-us'),
+        lm=os.path.join(model_path, 'en-us.lm.bin'),
+        dic=os.path.join(model_path, 'cmudict-en-us.dict')
+    )
+    if instruction=="voice_run" or "next":
+        command =0
+        assistanceFlag=0
+        personReachedFlag=0
+    elif instruction=="home":
+        command =0
+        assistanceFlag=1
+        personReachedFlag=1
+    hmiPhase.data=1
+    pub_play.publish(hmiPhase)
+    for speechPhrase in speech:
+        #print(speechPhrase,'1')    #Debugging statment
+        phrase=str(speechPhrase)
+        #print(phrase,'2')          #Debugging statement
+        if phrase in wordsList: #meant to screen out words here itself as it would be faster than sending each speech message over ros publisher(and also potentially losing speechmessages)
+            option=wordListdict[phrase]
+            print(option)
+            if option==1 or option==3:
+                print("said yes")
+                if assistanceFlag==0:
+                    hmiPhase.data=3
+                    pub_play.publish(hmiPhase)
+                    personReachedFlag=1
+                    command=1
+                    time.sleep(10)
+                    hmiPhase.data=4
+                    pub_play.publish(hmiPhase)
+                    assistanceFlag=1
+                else :
+
+                    hmiPhase.data=5
+                    pub_play.publish(hmiPhase)
+                    command=3
+
+            elif option==2 or option==4:
+                print("said no")
+                if personReachedFlag==0 and assistanceFlag==0:
+                    hmiPhase.data=2
+                    pub_play.publish(hmiPhase)
+                elif personReachedFlag==1 and assistanceFlag==1:
+                    hmiPhase.data=6
+                    pub_play.publish(hmiPhase)
+                    command=2
+
+
+
+    msg.data=command       #Debugging statement
+    rospy.loginfo(msg.data)
+    pub.publish(msg)
+    rate.sleep()
+
+
 def voicePublisher():
     pub = rospy.Publisher('/speech', Int16, queue_size=10) #defined as Int as it is less data to send than string
     pub_play = rospy.Publisher('/sound_play',Int16, queue_size=10)
@@ -44,63 +108,10 @@ def voicePublisher():
     msg=Int16()
     hmiPhase=Int16()
     while not rospy.is_shutdown():
+        rospy.Subscriber('/voice_commands', String, callback) # does a ros node need a callback?
 
-        speech = LiveSpeech(
-            verbose=False,
-            sampling_rate=8000,
-            buffer_size=256,
-            no_search=False,
-            full_utt=False,
-            hmm=os.path.join(model_path, 'en-us'),
-            lm=os.path.join(model_path, 'en-us.lm.bin'),
-            dic=os.path.join(model_path, 'cmudict-en-us.dict')
-        )
+        #This subscirber should be the same topic as the topic published in sound_player
 
-        command =0
-        assistanceFlag=0
-        personReachedFlag=0
-        hmiPhase.data=1
-        pub_play.publish(hmiPhase)
-        for speechPhrase in speech:
-            #print(speechPhrase,'1')    #Debugging statment
-            phrase=str(speechPhrase)
-            #print(phrase,'2')          #Debugging statement
-            if phrase in wordsList: #meant to screen out words here itself as it would be faster than sending each speech message over ros publisher(and also potentially losing speechmessages)
-                option=wordListdict[phrase]
-                print(option)
-                if option==1 or option==3:
-                    print("said yes")
-                    if assistanceFlag==0:
-                        hmiPhase.data=3
-                        pub_play.publish(hmiPhase)
-                        personReachedFlag=1
-                        command=1
-                        time.sleep(10)
-                        hmiPhase.data=4
-                        pub_play.publish(hmiPhase)
-                        assistanceFlag=1
-                    else :
-
-                        hmiPhase.data=5
-                        pub_play.publish(hmiPhase)
-                        command=3
-
-                elif option==2 or option==4:
-                    print("said no")
-                    if personReachedFlag==0:
-                        hmiPhase.data=2
-                        pub_play.publish(hmiPhase)
-                    else :
-                        hmiPhase.data=6
-                        pub_play.publish(hmiPhase)
-                        command=2
-
-
-
-        msg.data=command       #Debugging statement
-        rospy.loginfo(msg.data)
-        pub.publish(msg)
-        rate.sleep()
 
 if __name__ == '__main__':
     voicePublisher()
