@@ -16,6 +16,7 @@ from pocketsphinx import LiveSpeech, get_model_path
 
 import rospy
 from std_msgs.msg import Int16
+from std_msgs.msg import String
 import time
 
 model_path = get_model_path()
@@ -48,11 +49,11 @@ def callback(instruction):
         lm=os.path.join(model_path, 'en-us.lm.bin'),
         dic=os.path.join(model_path, 'cmudict-en-us.dict')
     )
-    if instruction=="voice_run" or "next":
+    if instruction.data=="voice_run" or instruction.data=="next":
         command =0
         assistanceFlag=0
         personReachedFlag=0
-    elif instruction=="home":
+    elif instruction.data=="home":
         command =0
         assistanceFlag=1
         personReachedFlag=1
@@ -107,9 +108,8 @@ def voicePublisher():
     rate = rospy.Rate(10) # 10hz
     msg=Int16()
     hmiPhase=Int16()
-    while not rospy.is_shutdown():
-        rospy.Subscriber('/voice_commands', String, callback) # does a ros node need a callback?
-
+    rospy.Subscriber('/voice_commands', String, callback) # does a ros node need a callback?
+    rospy.spin()
         #This subscirber should be the same topic as the topic published in sound_player
 
 
