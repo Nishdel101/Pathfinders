@@ -13,35 +13,41 @@ from playsound import playsound
 logic-
 
 subcriber callback-
-	callback goes to main method in voice recon class
-	
+    callback goes to main method in voice recon class
+    
 voice recon class
             enters main method
-	
+    
 
 
 
 """
 class voice_recognition()
 
-	previous_state="0"
+    previous_state="0"
     next_state="0"
     phrase=0
-	wordsList=['yes','no','yeah','nope']        #vocabulary to be increased
+    wordsList=['yes','no','yeah','nope']        #vocabulary to be increased
     pub = rospy.Publisher('/speech', Int16, queue_size=10) #defined as Int as it is less data to send than string
     rospy.init_node('VoiceRecognition', anonymous=True)
     rate = rospy.Rate(10) # 10hz
 
-	wordListdict = {
-	    'yes':1,
-	    'no':2,
-	    'yeah':1,
-	    'nope':2
-	}
-	def __init__(self):
-	
+    wordListdict = {
+        'yes':1,
+        'no':2,
+        'yeah':1,
+        'nope':2
+    }
+    def __init__(self):
 
-	def listener(self):
+    def controller(self,msg):
+
+        if msg.data=="run_voice":
+            self.listener(command)
+        if msg.data=="shutdown":
+            print("shutdown")
+
+    def listener(self):
 
         speech = LiveSpeech(
             verbose=False,
@@ -59,38 +65,44 @@ class voice_recognition()
             #print(phrase,'2')          #Debugging statement
             if phrase in wordsList: #meant to screen out words here itself as it would be faster than sending each speech message over ros publisher(and also potentially losing speechmessages)
                 self.option=wordListdict[phrase]
-        choice()
+        if self.previous_state!="2" || self.previous_state!="5" || self.previous_state!="6":
+            self.choice()
+        elif self.previous_state=="2":
+            pub.publish("next_person")
+            self.previous_state="0" #or can shutdown node here
+            self.option="0"
+        elif self.previous_state=="5":
+            pub.publish("follow")
+        elif self.previous_state=="6":
+            pub.publish("go_home")
 
 
-    def ext_command
+    def choice(self):
 
-
-	def choice(self):
-
-	    if self.previous_state =="0" and self.option=="0"
+        if self.previous_state =="0" and self.option=="0"
             self.player(1)
-           self.previous_state="1"
-            self.next_state="2"
+            self.previous_state="1"
+
         if self.previous_state =="1" and self.option=="2"
             self.player(2)
             self.previous_state="2"
-            self.next_state="0"
+
         if self.previous_state =="1" and self.option=="1"
             self.player(3)
             time.sleep(10)
             self.player(4)
             self.previous_state="4"
-            self.next_state=
+
         if self.previous_state =="4" and self.option=="1"
             self.player(5)
             self.previous_state="5"
-            self.next_state=
+
         if self.previous_state =="4" and self.option=="2"
             self.player(6)
             self.previous_state="6"
 
-	def player(self,voice):
-		if voice== 1:
+    def player(self,voice):
+        if voice== 1:
             print("im here to help. Did you ask for this medkit")
             playsound('src/Pathfinders/Voice_Recognition/1.mp3')
         if voice== 2:
@@ -111,9 +123,8 @@ class voice_recognition()
             print("Bye, im going home now")
             playsound('src/Pathfinders/Voice_Recognition/6.mp3')
             #place publisher code here
-	
-	def publisher(self,pub_msg):
 
-	
-	
-	def subscriber(self,subscribe_msg):
+
+
+subbed_msg=voice_recognition()
+rospy.Subscriber('/voice_commands', String, subbed_msg.controller(msg))
