@@ -1,0 +1,8 @@
+<launch>
+
+<include file='$(find turtlebot3_slam)/launch/turtlebot3_slam.launch' />
+<include file='$(find pathfinder_nav)/launch/move_base.launch' />
+
+<node pkg='pathfinder_nav' type='goal_publisher.py' name='goal_publisher' output='screen' />
+
+</launch>
