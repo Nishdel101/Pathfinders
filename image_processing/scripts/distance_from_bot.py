@@ -24,9 +24,6 @@ centre_body = 0
 centre_face = 0
 
 
-def Area(length,breadth):
-    return length*breadth
-
 distances_calibrated = {
 	0:0,
 	1:1,
@@ -71,7 +68,7 @@ def Body_detect(msg):
             if detection.probability > 0.5:
                 length=detection.xmax - detection.xmin
                 breadth=detection.ymax- detection.ymin
-                area_Body.append(Area(length,breadth))
+                area_Body.append(length*breadth)
         print(max(area_Body))
         i_body = area_Body.index(max(area_Body))
         x_max_body=msg.bounding_boxes[i_body].xmax

@@ -8,12 +8,12 @@ import time
 
 #set image size
 Image_WIDTH=1280
-Image_HEIGHT=960
+Image_HEIGHT=720#960
 
 #rospy commands
 rospy.init_node('image_raw_pub',anonymous=True)
 pub=rospy.Publisher('/camera/image_raw',Image,queue_size=1)
-rate=rospy.Rate(0.25)
+rate=rospy.Rate(30)
 
 #opencv commands
 cam = cv2.VideoCapture(0)
