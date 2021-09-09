@@ -16,7 +16,6 @@ global option
 previous_state = "1"
 option = 0
 rospy.init_node('VoiceRecognition', anonymous=True)
-
 rate = rospy.Rate(10)
 """
 
@@ -42,7 +41,6 @@ class voice_recognition():
 
     wordsList = ['yes', 'no', 'yeah', 'nope']  # vocabulary to be increased
 
-    pub = rospy.Publisher('/speech', Int16, queue_size=10)  # defined as Int as it is less data to send than string
 
     rate = rospy.Rate(10)  # 10hz
     option = 0
@@ -59,19 +57,21 @@ class voice_recognition():
         if self.phrase in self.wordsList:
             option = self.wordListdict[self.phrase]
             print("optionhere", option)
-            if previous_state != "2" and previous_state != "5" and previous_state != "6":
+            if previous_state != "2" or previous_state != "5" or previous_state != "6":
                 self.choice()
+            """
             elif previous_state == "2":
-                # pub.publish("next_person")
+                pub.publish("next_person")
                 print("next person")
                 previous_state = "2"  # or can shutdown node here
                 option = 0
             elif previous_state == "5":
-                # self.pub.publish("follow")
+                pub.publish("follow")
                 print("follow")
             elif previous_state == "6":
-                # self.pub.publish("go_home")
+                pub.publish("go_home")
                 print("gohome")
+            """
 
         else:  # meant to screen out words here itself as it would be faster than sending each speech message over ros publisher(and also potentially losing speechmessages)
             print("exiting")
@@ -136,9 +136,10 @@ def controller(msg):
 
 
 rospy.Subscriber('/voice_commands', String, controller)
+pub = rospy.Publisher('/speech', Int16, queue_size=10)  # defined as Int as it is less data to send than string
 print("here5")
 while not rospy.is_shutdown():
-    global speech
+    global speechx
     speech = LiveSpeech(
         verbose=False,
         sampling_rate=8000,
@@ -152,7 +153,7 @@ while not rospy.is_shutdown():
 
     # try sending speech to another function
     print("here7")
-    print('speech')
+    #print('speech')
     print(speech)
     # complete code goes within if command ==run voice from this point
     if previous_state == "1" or previous_state == "2" and option == 0:
@@ -170,7 +171,20 @@ while not rospy.is_shutdown():
             subbed_msg = voice_recognition(phrase)
             subbed_msg.listener()
             # time.sleep(3)
-            if previous_state == "2" or previous_state == "5" or previous_state == "6"and option !=0:
+
+            if previous_state == "2":
+                pub.publish(1)
+                print("next person")
+                previous_state = "2"  # or can shutdown node here
+                option = 0
+                break
+            elif previous_state == "5":
+                pub.publish(2)
+                print("follow")
+                break
+            elif previous_state == "6":
+                pub.publish(3)
+                print("gohome")
                 break
     except:
         print("no speech")
