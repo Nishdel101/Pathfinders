@@ -4,28 +4,36 @@ from move_base_msgs.msg import MoveBaseActionResult
 from darknet_ros_msgs.msg import ObjectCount, BoundingBoxes
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
+import math
+import numpy as np
+from tf2_msgs.msg import TFMessage
 
 '''
 /move_base/result - shows Goal reached
 /darknet_ros/found_object - shows count of people detected
 '''
 
-image_width = 1280
-image_height = 720
 
-message = BoundingBoxes
-
+global image_width
+global camera_angle
 global centre_body
 global centre_face
 global body_detect_flag
 global face_detect_flag
 global area_Faces
 global area_Body
+global pub_goal
+global pixel_angle
+
 area_Faces = []
 area_Body = []
 centre_body = 0
 centre_face = 0
-global pub_goal
+message = BoundingBoxes
+image_width = 1280
+image_height = 720
+camera_angle = 65
+pixel_angle = camera_angle/image_width
 
 distances_calibrated = {
     0: 0,
@@ -35,9 +43,35 @@ distances_calibrated = {
     4: 4,
     5: 5
 }
+def quaternion_to_euler_angle_vectorized1(w, x, y, z):
+    ysqr = y * y
 
+    t0 = +2.0 * (w * x + y * z)
+    t1 = +1.0 - 2.0 * (x * x + ysqr)
+    X = np.degrees(np.arctan2(t0, t1))
+
+    t2 = +2.0 * (w * y - z * x)
+    t2 = np.where(t2>+1.0,+1.0,t2)
+    #t2 = +1.0 if t2 > +1.0 else t2
+
+    t2 = np.where(t2<-1.0, -1.0, t2)
+    #t2 = -1.0 if t2 < -1.0 else t2
+    Y = np.degrees(np.arcsin(t2))
+
+    t3 = +2.0 * (w * z + x * y)
+    t4 = +1.0 - 2.0 * (ysqr + z * z)
+    Z = np.degrees(np.arctan2(t3, t4))
+
+    return Z
 
 def area_distance(area_max):
+
+
+    '''
+    still to be calibrated
+    :param area_max:
+    :return:
+    '''
     global pub_goal
     distance_message = String()
     if area_max < 50000:  # rough approx
@@ -60,6 +94,7 @@ def area_distance(area_max):
 
     distance_message.data = str(distance_to_move)
     print("distance of bot from person approx", distance_to_move)
+    Movement()
     pub_goal.publish(distance_message)
 
 
@@ -69,36 +104,46 @@ def Body_detect(msg):
     body_detect_flag = 1
     area_Body.clear()
     print("Body_Detect")
-    try:
-        for detection in msg.bounding_boxes:
-            if detection.probability > 0.5:
-                length = detection.xmax - detection.xmin
-                breadth = detection.ymax - detection.ymin
-                area_Body.append(length * breadth)
-        print(max(area_Body))
-        i_body = area_Body.index(max(area_Body))
-        x_max_body = msg.bounding_boxes[i_body].xmax
-        x_min_body = msg.bounding_boxes[i_body].xmin
-        centre_body = (x_max_body + x_min_body) / 2
-        Movement()
-        print("Body_detect : SUCCESSFUL")
-        area_distance(max(area_Body))
-
-    except:
-        print("Body_detect : NOBODY DETECTED")
+    for detection in msg.bounding_boxes:
+        if detection.probability > 0.5:
+            length = detection.xmax - detection.xmin
+            breadth = detection.ymax - detection.ymin
+            area_Body.append(length * breadth)
+    print(max(area_Body))
+    i_body = area_Body.index(max(area_Body))
+    x_max_body = msg.bounding_boxes[i_body].xmax
+    x_min_body = msg.bounding_boxes[i_body].xmin
+    centre_body = (x_max_body + x_min_body) / 2
+    print("Body_detect : SUCCESSFUL")
+    print(f'center of body is {centre_body}')
+    area_distance(max(area_Body))
 
 
 def Movement():
+    global image_width
+    global pixel_angle
     global centre_body
+    print ('Movement is working')
     movement = centre_body - (image_width / 2)
-    if movement < -80 and movement > 80:
+    if movement > abs(80):
+
+        pose = TFMessage()
         print(f'move {movement} pixels')
-        pub_rotation = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+        angle_person = math.radians(pixel_angle)*movement
+        footprint_frame = rospy.wait_for_message('/base_footprint', TFMessage, timeout=None)
+        angle_robot = quaternion_to_euler_angle_vectorized1(footprint_frame.transforms[0].transform.rotation.w, footprint_frame.transforms[0].transform.rotation.x, footprint_frame.transforms[0].transform.rotation.y, footprint_frame.transforms[0].transform.rotation.z)
+        total_angle = angle_person + angle_robot
+        print(angle_robot)
+        print(total_angle)
+
+
+        #print(pose)
+        #pub_rotation = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
         #make a twist message with desired rotation angle
-        pub_rotation.publish(twist_message)
-        #give time delay
+        #pub_rotation.publish(rotation)
         #set twist message to 0 velocity
-        pub_rotation.publish(twist_message)
+        #rotation.angular.z = 0
+        #pub_rotation.publish(rotation)
 
 
 """
