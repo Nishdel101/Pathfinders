@@ -7,28 +7,17 @@ from std_msgs.msg import Int16, String
 import time
 from playsound import playsound
 
+
 global command
 global speech
 model_path = get_model_path()
-
+command = "shutdown"
 global previous_state
 global option
 previous_state = "1"
 option = 0
 rospy.init_node('VoiceRecognition', anonymous=True)
 rate = rospy.Rate(10)
-"""
-
-logic-
-
-subcriber callback-
-    callback goes to main method in voice recon class
-    
-voice recon class
-            enters main method
-
-"""
-
 
 class voice_recognition():
     wordListdict = {
@@ -51,27 +40,28 @@ class voice_recognition():
     def listener(self):
         global option
         global previous_state
-
+        global command
         print("here1")
         print("selfphrase:", self.phrase)
         if self.phrase in self.wordsList:
             option = self.wordListdict[self.phrase]
             print("optionhere", option)
-            if previous_state != "2" or previous_state != "5" or previous_state != "6":
-                self.choice()
-            """
-            elif previous_state == "2":
-                pub.publish("next_person")
-                print("next person")
-                previous_state = "2"  # or can shutdown node here
-                option = 0
-            elif previous_state == "5":
-                pub.publish("follow")
-                print("follow")
-            elif previous_state == "6":
-                pub.publish("go_home")
-                print("gohome")
-            """
+            if command=="ask":
+                if previous_state != "2" or previous_state != "5" or previous_state != "6":
+                    self.choice()
+                """
+                elif previous_state == "2":
+                    pub.publish("next_person")
+                    print("next person")
+                    previous_state = "2"  # or can shutdown node here
+                    option = 0
+                elif previous_state == "5":
+                    pub.publish("follow")
+                    print("follow")
+                elif previous_state == "6":
+                    pub.publish("go_home")
+                    print("gohome")
+                """
 
         else:  # meant to screen out words here itself as it would be faster than sending each speech message over ros publisher(and also potentially losing speechmessages)
             print("exiting")
@@ -81,28 +71,28 @@ class voice_recognition():
         global previous_state
         global option
         if previous_state == "1" and option == 2:
-            self.player(2)
+            pub.publish(5)
             previous_state = "2"
             option = 0
 
         elif previous_state == "1" and option == 1:
-            self.player(3)
+            pub.publish(6)
             print("taking med kit")
             time.sleep(10)
-            self.player(4)
+            pub.publish(7)
             print("asked if further assistance needed")
             previous_state = "4"
 
         elif previous_state == "4" and option == 1:
-            self.player(5)
+            pub.publish(8)
             previous_state = "5"
 
         elif previous_state == "4" and option == 2:
-            self.player(6)
+            pub.publish(9)
             previous_state = "6"
 
         print(previous_state, option)
-
+    """"
     def player(self, voice):
         print("here3", voice)
 
@@ -124,22 +114,23 @@ class voice_recognition():
             print("Bye, im going home now")
             playsound('src/Pathfinders/Voice_Recognition/6.mp3')
             # place publisher code here
-
+    """
 
 def controller(msg):
-    print("here4")
     global command
-    if msg.data == "run_voice":
-        command = "run_voice"
+    print("here4")
+    if msg.data == "ask":
+        command = "ask"
     if msg.data == "shutdown":
+        command ="shutdown"
         print("shutdown")
 
 
-rospy.Subscriber('/voice_commands', String, controller)
+rospy.Subscriber('/voice_trigger', String, controller)
 pub = rospy.Publisher('/speech', Int16, queue_size=10)  # defined as Int as it is less data to send than string
 print("here5")
 while not rospy.is_shutdown():
-    global speechx
+    global speech
     speech = LiveSpeech(
         verbose=False,
         sampling_rate=8000,
@@ -156,10 +147,10 @@ while not rospy.is_shutdown():
     #print('speech')
     print(speech)
     # complete code goes within if command ==run voice from this point
-    if previous_state == "1" or previous_state == "2" and option == 0:
-            print("im here to help. Did you ask for this medkit")
-            playsound('src/Pathfinders/Voice_Recognition/1.mp3')
-            previous_state="1"
+    if command=="ask":
+        if previous_state == "1" or previous_state == "2" and option == 0:
+                pub.publish(4)
+                previous_state="1"
     try:
         print("here8")
         for speechPhrase in speech:
