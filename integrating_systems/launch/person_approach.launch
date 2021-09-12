@@ -1,0 +1,8 @@
+<launch>
+    <include file='$(find darknet_ros)/launch/darknet_ros.launch'>
+        <arg name='image' value='/camera/image_raw' />
+    </include>
+
+    <node pkg='image_processing' type='extract_footprint.py' name='extract_footprint' output='log' />
+    <node pkg='image_processing' type='goal_setting.py' name='new_goal' output='screen' />
+</launch>
