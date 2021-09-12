@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import rospy
+import time
 from move_base_msgs.msg import MoveBaseActionResult
 from darknet_ros_msgs.msg import ObjectCount, BoundingBoxes
 from std_msgs.msg import String
@@ -115,7 +116,7 @@ def Body_detect(msg):
     area_Body.clear()
     print("Body_Detect")
     for detection in msg.bounding_boxes:
-        if detection.probability > 0.5 and detection.class == 'Person':
+        if detection.probability > 0.5 and detection.Class == 'person':
             length = detection.xmax - detection.xmin
             breadth = detection.ymax - detection.ymin
             area_Body.append(length * breadth)
@@ -139,28 +140,30 @@ def Movement(distance):
     new_goal = PoseStamped()
     print('Movement is working')
     #rospy.wait_for_message('/move_base/result', MoveBaseActionResult, timeout=None)
+    """
 
-    footprint_frame = rospy.wait_for_message('/base_footprint', TFMessage, timeout=None)
-    print(footprint_frame)
-    angle_robot = quaternion_to_euler_angle_vectorized1(footprint_frame.transforms[0].transform.rotation.w,
+    #footprint_frame = rospy.wait_for_message('/base_footprint', TFMessage, timeout=None)
+    #print(footprint_frame)
+    #angle_robot = quaternion_to_euler_angle_vectorized1(footprint_frame.transforms[0].transform.rotation.w,
                                                         footprint_frame.transforms[0].transform.rotation.x,
                                                         footprint_frame.transforms[0].transform.rotation.y,
                                                         footprint_frame.transforms[0].transform.rotation.z)
-    total_angle = angle_robot
+    #total_angle = angle_robot
+    """
     movement = centre_body - (image_width / 2)
 
     if abs(movement) > 80:
 
         print(f'move {movement} pixels')
         angle_person = math.radians(pixel_angle) * movement
-        total_angle = angle_robot - angle_person
+        #total_angle = angle_robot - angle_person
 
-    print(angle_robot)
-    print(total_angle)
-    x_goal = (distance - 1) * math.cos(total_angle)
-    y_goal = (distance - 1) * math.sin(total_angle)
+    #print(angle_robot)
+    #print(total_angle)
+    x_goal = (distance - 1.2) * math.cos(angle_person)
+    y_goal = (distance - 1.2) * math.sin(angle_person)
     print(f'x = {x_goal} and y = {y_goal}')
-    if abs(x_goal) > 0.5 or abs(y_goal) > 0.5:
+    if abs(x_goal) > 1.5 or abs(y_goal) > 1.5:
         """
 
         new_goal.header.frame_id = 'odom'
@@ -219,14 +222,14 @@ def read_bounding_box(msg):
 """
 def Rotation_goal():
 
-    footprint_frame = rospy.wait_for_message('/base_footprint', TFMessage, timeout=None)
+    #footprint_frame = rospy.wait_for_message('/base_footprint', TFMessage, timeout=None)
     angle_rotation = math.radians(36)
 
     quat = euler_to_quaternion( 0, 0, angle_rotation)
 
     new_goal = PoseStamped()
-    print(total_angle)
-    print(f'total angle {total angle})
+    #print(total_angle)
+    print(f'in goal_rotation')
     """
     new_goal.header.frame_id = 'odom'
 
@@ -249,9 +252,9 @@ def Rotation_goal():
     new_goal.pose.position.z = 0
 
     new_goal.pose.orientation.x = quat[0]
-    new_goal.pose.orientation.y = quat[0]
-    new_goal.pose.orientation.z = quat[0]
-    new_goal.pose.orientation.w = quat[0]
+    new_goal.pose.orientation.y = quat[1]
+    new_goal.pose.orientation.z = quat[2]
+    new_goal.pose.orientation.w = quat[3]
 
     pub_goal.publish(new_goal)
 
@@ -275,11 +278,17 @@ def Rotation_cmd():
 
 
 def old_goal(msg):
+    print('goal received')
     if msg.status.text == 'Goal reached.':
-        while rospy.wait_for_message('/darknet_ros/bounding_boxes', BoundingBoxes, timeout=None).class != 'Person':
+        time.sleep(5)
+        print('loop is entered')
+        while rospy.wait_for_message('/darknet_ros/found_object', ObjectCount, timeout=5).count == 0:
+            print('rotation happening')
             Rotation_goal()
-            rospy.sleep(10)
+            time.sleep(5)
+            
         else:
+            print('bounding box loop')
             bounding_box = rospy.wait_for_message('/darknet_ros/bounding_boxes', BoundingBoxes, timeout=None)
             Body_detect(bounding_box)
 
